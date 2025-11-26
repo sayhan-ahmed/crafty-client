@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -24,6 +25,8 @@ export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  const isActive = (path) => pathname === path;
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -85,9 +88,19 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className="text-xl font-medium text-gray-700 hover:text-amber-700 focus:text-amber-700 focus:font-bold transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px after:bg-amber-700 after:transition-all hover:after:w-full"
+                  className={`text-xl font-medium relative transition-colors ${
+                    isActive(link.href)
+                      ? "text-amber-700 font-bold"
+                      : "text-gray-700 hover:text-amber-700"
+                  }`}
                 >
                   {link.name}
+                  {/* underline */}
+                  <span
+                    className={`absolute left-0 -bottom-0.5 h-0.5 bg-amber-700 transition-all duration-300 ${
+                      isActive(link.href) ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
+                  />
                 </Link>
               ))}
             </div>
@@ -211,8 +224,12 @@ export default function Navbar() {
                   <Link
                     key={link.name}
                     href={link.href}
-                    className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-amber-50 rounded-md"
                     onClick={() => setMobileMenuOpen(false)}
+                    className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                      isActive(link.href)
+                        ? "text-amber-700 font-semibold bg-amber-50"
+                        : "text-gray-700 hover:bg-amber-50"
+                    }`}
                   >
                     {link.name}
                   </Link>

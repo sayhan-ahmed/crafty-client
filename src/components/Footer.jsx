@@ -1,4 +1,3 @@
-// components/Footer.jsx
 "use client";
 
 import { useState } from "react";
@@ -14,6 +13,7 @@ import {
 import { FaXTwitter, FaFacebookF, FaInstagram } from "react-icons/fa6";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { Cormorant } from "next/font/google";
+import toast from "react-hot-toast";
 
 const cormorant = Cormorant({ subsets: ["latin"] });
 
@@ -36,17 +36,18 @@ export default function Footer() {
     { name: "FAQs", href: "#" },
   ];
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-      alert("Please enter a valid email.");
-      return;
+      return toast.error("Invalid email address");
     }
+    const loadingToast = toast.loading("Subscribing...");
     setSubmitting(true);
     setTimeout(() => {
+      toast.dismiss(loadingToast);
+      toast.success("Thanks — you’re subscribed!");
       setSubmitting(false);
       setEmail("");
-      alert("Thanks — you’re subscribed!");
     }, 900);
   };
 
