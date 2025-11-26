@@ -7,30 +7,24 @@ import { auth } from "@/lib/firebase";
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
-  const [checking, setChecking] = useState(true);
+  const [isReady, setIsReady] = useState(false);
+  const [isAllowed, setIsAllowed] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      (user) => {
-        if (!user) {
-          // not signed in — send to login
-          router.replace("/login");
-        }
-        // if user exists, we let children render
-        setChecking(false);
-      },
-      (err) => {
-        console.error("onAuthStateChanged error:", err);
-        setChecking(false);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAllowed(true);
+      } else {
         router.replace("/login");
       }
-    );
+      setIsReady(true);
+    });
 
     return () => unsubscribe();
   }, [router]);
 
-  if (checking) {
+  // Block everything until auth is checked
+  if (!isReady) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <span>Checking authentication…</span>
@@ -38,5 +32,6 @@ export default function DashboardLayout({ children }) {
     );
   }
 
+  if (!isAllowed) return null;
   return <>{children}</>;
 }
