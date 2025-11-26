@@ -15,22 +15,22 @@ const slidesData = [
   {
     headline: "Handmade Manufacturing",
     subtitle: "High-Performance Ceramics",
-    image1: "/images/handmade-1.jpg", // Small center image
-    image2: "/images/handmade-2.jpg", // Large right image
+    image1: "/images/ceramic.png", // Small center image
+    image2: "/images/ceramic-2.png", // Large right image
     bgTexture: "bg-[#f9f5ed]", // Light background color from image
   },
   {
     headline: "Small Batch Textiles",
     subtitle: "Artisan-Woven Home Goods",
-    image1: "/images/textile-1.jpg",
-    image2: "/images/textile-2.jpg",
+    image1: "/images/textile-2.png",
+    image2: "/images/textile.png",
     bgTexture: "bg-[#f9f5ed]",
   },
   {
     headline: "Sustainable Woodcraft",
     subtitle: "Naturally Sourced Furniture & Decor",
-    image1: "/images/woodcraft-1.jpg",
-    image2: "/images/woodcraft.jpg",
+    image1: "/images/woodcraft.png",
+    image2: "/images/woodcraft-2.png",
     bgTexture: "bg-[#f9f5ed]",
   },
 ];
@@ -64,12 +64,12 @@ const HeroSlide = ({ data }) => (
       />
     </svg>
 
-    <div className="max-w-7xl mx-auto w-full h-full flex items-center justify-between px-4 sm:px-6 lg:px-8 py-16">
+    <div
+      className={`${cormorant.className} max-w-7xl mx-auto w-full h-full flex items-center justify-between px-4 sm:px-6 lg:px-8 py-16`}
+    >
       {/* Left Content: Text Block */}
       <div className="relative z-10 w-full md:w-1/2 space-y-6 pr-4 sm:pr-8">
-        <h1
-          className={`${cormorant.className} text-6xl md:text-7xl lg:text-8xl font-extrabold text-[#3f3f3f] leading-none`}
-        >
+        <h1 className="text-6xl md:text-7xl lg:text-8xl font-extrabold text-[#3f3f3f] leading-none">
           {data.headline}
         </h1>
         <p className="text-xl md:text-2xl text-gray-700 font-medium tracking-wide">
@@ -79,7 +79,7 @@ const HeroSlide = ({ data }) => (
         {/* CTA Button */}
         <Link
           href="/products"
-          className="inline-block mt-4 text-lg font-semibold px-8 py-3 rounded-md bg-[#c76536] text-white shadow-lg hover:bg-[#a6532d] transition-all duration-300 ease-out"
+          className="inline-block mt-4 text-lg font-semibold px-8 py-3 rounded-md bg-[#c76536] text-white shadow-lg hover:bg-[#a6532d] transition-all duration-300 ease-out hover:scale-105"
         >
           VIEW COLLECTION
         </Link>
