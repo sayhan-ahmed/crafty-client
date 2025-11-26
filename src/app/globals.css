@@ -33,3 +33,40 @@ html {
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
+
+.social-icon {
+  text-decoration: none;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.08);
+
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  outline: none;
+
+  transition: all 0.3s ease-out;
+  animation: float 3s ease-in-out infinite;
+}
+
+.social-icon:hover {
+  transform: scale(1.05) translateY(-2px);
+}
+
+.social-icon:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #ffffff;
+}
+
+.footer-link {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 1rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.footer-link:hover {
+  color: #ffbf00;
+}
