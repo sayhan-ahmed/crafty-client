@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Search, Filter, ArrowRight } from "lucide-react";
@@ -9,7 +9,7 @@ import { useSearchParams } from "next/navigation";
 
 const cormorant = Cormorant({ subsets: ["latin"] });
 
-export default function ProductsPage() {
+function ProductsContent() {
   const [allProducts, setAllProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -208,5 +208,20 @@ export default function ProductsPage() {
         )}
       </div>
     </div>
+  );
+}
+
+// Wrapping inside Suspense
+export default function ProductsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#fcf8f0] flex justify-center items-center">
+          Loading...
+        </div>
+      }
+    >
+      <ProductsContent />
+    </Suspense>
   );
 }
