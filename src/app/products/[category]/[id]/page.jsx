@@ -253,9 +253,7 @@ export default function ProductDetails() {
                     <span className="block font-bold text-gray-900">
                       Material
                     </span>
-                    <span className="text-gray-600">
-                      Premium Sustainable {product.category}
-                    </span>
+                    <span className="text-gray-600">{product.material}</span>
                   </div>
                 </li>
                 <li className="flex items-start">
