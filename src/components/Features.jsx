@@ -24,17 +24,17 @@ const benefitsList = [
   { text: "Dedicated Artisan Support", icon: Heart },
 ];
 
-// Data for the statistics boxes (using project theme colors)
+// Data for the statistics boxes
 const statsData = [
   {
     value: "10K+",
     label: "Satisfied Customers",
-    bgColor: "bg-[#507662]", // Project Green
+    bgColor: "bg-[#507662]",
   },
   {
     value: "100+",
     label: "Verified Global Artisans",
-    bgColor: "bg-[#c76536]", // Project Amber/Brown CTA
+    bgColor: "bg-[#c76536]",
   },
 ];
 
@@ -89,8 +89,7 @@ export default function Features() {
 
           {/* RIGHT COLUMN: Layered Images and Stats */}
           <div className="w-full lg:w-1/2 relative h-[600px] md:h-[700px] mt-12 lg:mt-10">
-            {/* Image 1: Main Focus Image */}
-            {/* Z-index 40 for front image (higher than stat boxes) */}
+            {/* Image 1 */}
             <div className="absolute left-[30%] top-[5%] w-[55%] h-[55%] shadow-xl overflow-hidden z-30">
               <Image
                 src="/images/artisan.png"
@@ -124,7 +123,7 @@ export default function Features() {
               </p>
             </div>
 
-            {/* Image 2: Graphic Element */}
+            {/* Image 2 */}
             <div className="absolute bottom-[25%] left-0 w-[55%] h-[50%] shadow-2xl z-20 overflow-hidden">
               <Image
                 src="/images/artisan-2.png"
@@ -135,7 +134,7 @@ export default function Features() {
               />
             </div>
 
-            {/* Image 3: Bottom Image */}
+            {/* Image 3 */}
             <div className="absolute right-0 bottom-[0%] w-[65%] h-[50%] shadow-xl overflow-hidden z-10">
               <Image
                 src="/images/artisan-ceramics.png"
