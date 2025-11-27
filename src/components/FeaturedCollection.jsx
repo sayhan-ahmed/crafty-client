@@ -43,7 +43,7 @@ export default function FeaturedCollection() {
     fetchProducts();
   }, []);
 
-  // 3. Handle Add to Orders (Cart) [=== No backend yet ===]
+  // Handle Add to Orders (Cart)
   const handleAddToOrder = async (product) => {
     if (!user) {
       toast.error("Please login to place an order");
@@ -53,14 +53,16 @@ export default function FeaturedCollection() {
     const toastId = toast.loading("Adding to orders...");
 
     try {
+      const { _id, ...productData } = product;
       const orderData = {
-        ...product,
+        ...productData,
+        productId: _id,
         email: user.email,
-        _id: undefined,
+        userEmail: user.email,
       };
 
       // Call Backend API
-      const res = await fetch("https://crafty-server.vercel.app/products", {
+      const res = await fetch("https://crafty-server.vercel.app/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
