@@ -64,7 +64,7 @@ export default function Footer() {
       {/* Top decorative band */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
         <div className="rounded-xl bg-white/6 p-8 md:p-10 shadow-lg">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
             {/* Logo and Socials */}
             <div className="space-y-4">
               <Link href="/" className="inline-block no-underline">
@@ -158,7 +158,10 @@ export default function Footer() {
                 <p className="text-sm text-white/75 mb-2">
                   Join our newsletter
                 </p>
-                <form onSubmit={handleSubscribe} className="flex gap-2">
+                <form
+                  onSubmit={handleSubscribe}
+                  className="flex flex-col gap-3"
+                >
                   <label htmlFor="footer-email" className="sr-only">
                     Email address
                   </label>

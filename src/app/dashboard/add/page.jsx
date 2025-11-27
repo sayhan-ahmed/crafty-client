@@ -24,6 +24,7 @@ export default function AddProduct() {
     longDescription: "",
     price: "",
     category: "Bamboo",
+    material: "",
     image: "",
     rating: "5",
   });
@@ -195,10 +196,10 @@ export default function AddProduct() {
               </div>
             </div>
 
-            {/* --- SECTION 2: Category & Pricing --- */}
+            {/* --- SECTION 2: Category, Material & Pricing --- */}
             <div className="space-y-6">
               <h3 className="text-2xl font-bold text-gray-900 border-b pb-2">
-                Category & Pricing
+                Details & Pricing
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -220,6 +221,22 @@ export default function AddProduct() {
                     <option value="Decorations">Decorations</option>
                     <option value="Jewelry">Jewelry</option>
                   </select>
+                </div>
+
+                {/* --- Material Input --- */}
+                <div>
+                  <label className="block text-lg font-semibold text-gray-700 mb-1">
+                    Material
+                  </label>
+                  <input
+                    type="text"
+                    name="material"
+                    required
+                    value={formData.material}
+                    onChange={handleChange}
+                    placeholder="e.g. 100% Organic Cotton"
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#507662] outline-none"
+                  />
                 </div>
 
                 {/* Price */}
