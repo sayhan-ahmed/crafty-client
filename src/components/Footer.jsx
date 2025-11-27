@@ -146,7 +146,7 @@ export default function Footer() {
                 </p>
                 <p className="flex items-center gap-2">
                   <Phone className="w-4 h-4" strokeWidth={1.5} />
-                  <span>+1 (555) 123-4567</span>
+                  <span>+880 (123) 456-7890</span>
                 </p>
                 <p className="flex items-center gap-2">
                   <MapPin className="w-4 h-4" strokeWidth={1.5} />
