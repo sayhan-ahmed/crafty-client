@@ -109,10 +109,14 @@ export default function AddProduct() {
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold text-[#3f3f3f]">
-              Add New Product
+              Add New Product{" "}
+              <span className="text-sm font-light">
+                (Do you have any product in mind?)
+              </span>
             </h1>
             <p className="text-gray-600 mt-1">
-              Create a listing for your handcrafted item.
+              Create a listing for your handcrafted item. We’ll try to make it
+              available soon.
             </p>
           </div>
           <button
