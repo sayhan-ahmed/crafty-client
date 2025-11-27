@@ -8,9 +8,12 @@ import {
   ArrowLeft,
   ShoppingBag,
   Calendar,
-  Tag,
   Star,
   CheckCircle,
+  Truck,
+  ShieldCheck,
+  Box,
+  Palette,
 } from "lucide-react";
 import { Cormorant } from "next/font/google";
 import { toast } from "react-hot-toast";
@@ -123,17 +126,17 @@ export default function ProductDetails() {
           Back to Collection
         </Link>
 
-        {/* Main Content Grid */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        {/* --- TOP SECTION: Main Card --- */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-12">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* LEFT: Large Image */}
-            <div className="relative h-[400px] lg:h-auto bg-gray-100">
+            <div className="relative h-[400px] lg:h-auto bg-gray-100 group overflow-hidden">
               <Image
                 src={product.image || "/images/placeholder.jpg"}
                 alt={product.name}
                 fill
                 objectFit="cover"
-                className="hover:scale-105 transition-transform duration-700"
+                className="group-hover:scale-105 transition-transform duration-700"
                 unoptimized={true}
               />
               {/* Category Tag Overlay */}
@@ -171,17 +174,17 @@ export default function ProductDetails() {
 
               {/* Price */}
               <div className="flex text-3xl font-bold text-[#507662] mb-6">
-                <span className="mt-1 mr-1">$</span>
+                <span className="mt-0.5 mr-1">$</span>
                 <span>{product.price}</span>
               </div>
 
               {/* Divider */}
               <div className="h-px w-full bg-gray-100 mb-4"></div>
 
-              {/* Description */}
+              {/* Short Description */}
               <div className="prose prose-stone max-w-none mb-10">
                 <h3 className="text-lg font-bold text-gray-900 mb-3">
-                  Description
+                  Snapshot
                 </h3>
                 <p className="text-gray-600 leading-relaxed text-lg">
                   {product.description ||
@@ -214,6 +217,86 @@ export default function ProductDetails() {
                   Secure checkout • Free shipping on orders over $100
                 </p>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* --- BOTTOM SECTION: Detailed Info --- */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Long Description */}
+          <div className="lg:col-span-2 bg-white rounded-2xl p-8 md:p-12 shadow-sm border border-gray-100">
+            <h2 className="text-3xl font-bold text-[#3f3f3f] mb-6 border-b border-gray-100 pb-4">
+              The Product Story
+            </h2>
+            <div className="text-gray-600 text-lg leading-loose space-y-6">
+              {product.longDescription ? (
+                product.longDescription
+                  .split("\n")
+                  .map((line, i) => <p key={i}>{line}</p>)
+              ) : (
+                <p>{product.description}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Specs & Info */}
+          <div className="space-y-6">
+            {/* Specifications Card */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+              <h3 className="text-2xl font-bold text-[#3f3f3f] mb-6">
+                Specifications
+              </h3>
+              <ul className="space-y-4">
+                <li className="flex items-start">
+                  <Box className="w-5 h-5 text-amber-600 mt-1 mr-3" />
+                  <div>
+                    <span className="block font-bold text-gray-900">
+                      Material
+                    </span>
+                    <span className="text-gray-600">
+                      Premium Sustainable {product.category}
+                    </span>
+                  </div>
+                </li>
+                <li className="flex items-start">
+                  <Palette className="w-5 h-5 text-amber-600 mt-1 mr-3" />
+                  <div>
+                    <span className="block font-bold text-gray-900">
+                      Finish
+                    </span>
+                    <span className="text-gray-600">
+                      Natural / Hand-finished
+                    </span>
+                  </div>
+                </li>
+                <li className="flex items-start">
+                  <ShieldCheck className="w-5 h-5 text-amber-600 mt-1 mr-3" />
+                  <div>
+                    <span className="block font-bold text-gray-900">
+                      Warranty
+                    </span>
+                    <span className="text-gray-600">
+                      <span className="text-3xl text-amber-700 font-extrabold">
+                        1
+                      </span>{" "}
+                      Year Artisan Guarantee
+                    </span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            {/* Shipping Card */}
+            <div className="bg-[#507662] text-white rounded-2xl p-8 shadow-sm relative overflow-hidden">
+              <div className="relative z-10">
+                <Truck className="w-8 h-8 text-amber-300 mb-4" />
+                <h3 className="text-xl font-bold mb-2">Free Shipping</h3>
+                <p className="text-white/80">
+                  On all orders over $100. We ship worldwide with eco-friendly
+                  packaging.
+                </p>
+              </div>
+              <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white/10 rounded-full pointer-events-none"></div>
             </div>
           </div>
         </div>
