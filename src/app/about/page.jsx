@@ -39,11 +39,11 @@ export default function About() {
           </h2>
 
           <div className="text-lg prose prose-stone mx-auto text-gray-600 leading-relaxed space-y-4 max-w-2xl">
-            <p c>
-              At <strong className="text-amber-700">Crafty</strong>, we believe that the things we surround
-              ourselves with should tell a story. We started this journey to
-              bridge the gap between master artisans in remote villages and
-              modern homes around the world.
+            <p>
+              At <strong className="text-amber-700">Crafty</strong>, we believe
+              that the things we surround ourselves with should tell a story. We
+              started this journey to bridge the gap between master artisans in
+              remote villages and modern homes around the world.
             </p>
             <p>
               Every ceramic vase, woven basket, and leather bag you see here is
