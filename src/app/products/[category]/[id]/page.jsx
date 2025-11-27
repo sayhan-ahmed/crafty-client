@@ -19,6 +19,7 @@ import { Cormorant } from "next/font/google";
 import { toast } from "react-hot-toast";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import CraftyLoader from "@/components/CraftyLoader";
 
 const cormorant = Cormorant({ subsets: ["latin"] });
 
@@ -102,14 +103,7 @@ export default function ProductDetails() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-[#fcf8f0] flex justify-center items-center">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="w-16 h-16 bg-gray-200 rounded-full mb-4"></div>
-          <p className="text-gray-500 font-medium">Loading details...</p>
-        </div>
-      </div>
-    );
+    return <CraftyLoader />;
   }
 
   if (!product) return null;

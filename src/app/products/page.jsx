@@ -140,7 +140,10 @@ function ProductsContent() {
                 className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col"
               >
                 {/* Card Image */}
-                <div className="relative aspect-square overflow-hidden bg-gray-100">
+                <Link
+                  href={`/products/${product.category}/${product.slug}`}
+                  className="relative aspect-square overflow-hidden bg-gray-100"
+                >
                   <Image
                     src={product.image || "/images/placeholder.jpg"}
                     alt={product.name}
@@ -153,15 +156,18 @@ function ProductsContent() {
                   <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-[#507662] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
                     {product.category}
                   </span>
-                </div>
+                </Link>
 
                 {/* Card Content */}
                 <div className="p-5 flex flex-col grow">
                   <div className="grow">
                     {/* Title */}
-                    <h3 className="text-2xl h-1/2 font-bold text-gray-800 mb-2 group-hover:text-amber-700 transition-colors">
+                    <Link
+                      href={`/products/${product.category}/${product.slug}`}
+                      className="text-2xl h-1/2 font-bold text-gray-800 mb-2 group-hover:text-amber-700 transition-colors"
+                    >
                       {product.name}
-                    </h3>
+                    </Link>
 
                     {/* Short Description */}
                     <p className="text-gray-500 text-base line-clamp-2 mb-4">

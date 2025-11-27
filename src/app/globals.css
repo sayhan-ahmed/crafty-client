@@ -74,3 +74,111 @@ html {
 .footer-link:hover {
   color: #ffbf00;
 }
+
+/* --- CRAFTY LOADER ANIMATIONS --- */
+
+.crafty-spinner {
+  width: 50px;
+  height: 50px;
+  position: relative;
+  animation: crafty-rotate 2.5s infinite linear;
+}
+
+.crafty-block {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  border-radius: 4px;
+  animation: crafty-assemble 2.5s infinite ease-in-out;
+}
+
+.crafty-block:nth-child(1) {
+  background-color: #507662;
+  top: 0;
+  left: 0;
+}
+.crafty-block:nth-child(2) {
+  background-color: #c76536;
+  top: 0;
+  right: 0;
+}
+.crafty-block:nth-child(3) {
+  background-color: #c76536;
+  bottom: 0;
+  left: 0;
+}
+.crafty-block:nth-child(4) {
+  background-color: #507662;
+  bottom: 0;
+  right: 0;
+}
+
+@keyframes crafty-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes crafty-assemble {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.5) translate(0, 0);
+    border-radius: 50%;
+  }
+}
+
+.crafty-block:nth-child(1) {
+  animation-name: block-move-1;
+}
+.crafty-block:nth-child(2) {
+  animation-name: block-move-2;
+}
+.crafty-block:nth-child(3) {
+  animation-name: block-move-3;
+}
+.crafty-block:nth-child(4) {
+  animation-name: block-move-4;
+}
+
+@keyframes block-move-1 {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(12px, 12px);
+  }
+}
+@keyframes block-move-2 {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-12px, 12px);
+  }
+}
+@keyframes block-move-3 {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(12px, -12px);
+  }
+}
+@keyframes block-move-4 {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-12px, -12px);
+  }
+}

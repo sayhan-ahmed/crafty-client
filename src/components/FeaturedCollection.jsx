@@ -160,7 +160,7 @@ export default function FeaturedCollection() {
                 <h3
                   className={`${cormorant.className} text-xl font-bold text-gray-800 group-hover:text-amber-700 transition-colors cursor-pointer truncate px-2`}
                 >
-                  <Link href={`/products/${product._id}`}>
+                  <Link href={`/products/${product.category}/${product.slug}`}>
                     {product.name || "Untitled Product"}
                   </Link>
                 </h3>
