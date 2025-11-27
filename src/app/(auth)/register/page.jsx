@@ -6,6 +6,8 @@ import {
   updateProfile,
   GoogleAuthProvider,
   signInWithPopup,
+  sendEmailVerification,
+  signOut,
 } from "firebase/auth";
 import {
   ArrowRight,
@@ -35,7 +37,7 @@ export default function Register() {
 
   const router = useRouter();
 
-  // Sync user to MongoDB
+  // Sync user to MongoDB (For Google Login only)
   const saveUserToBackend = async (user) => {
     try {
       await fetch("https://crafty-server.vercel.app/users", {
@@ -52,7 +54,7 @@ export default function Register() {
     }
   };
 
-  // Handle Google Register
+  // Handle Google Register (Google emails are Auto-Verified)
   const handleGoogleRegister = async () => {
     const loadingId = toast.loading("Connecting with Google...");
     try {
@@ -60,6 +62,7 @@ export default function Register() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
+      // Save directly because Google verifies emails
       await saveUserToBackend(user);
 
       toast.success("Account created with Google!", { id: loadingId });
@@ -85,7 +88,7 @@ export default function Register() {
     const loadingId = toast.loading("Creating account...");
 
     try {
-      // Create User in Firebase
+      // 1. Create User in Firebase
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -93,15 +96,22 @@ export default function Register() {
       );
       const user = userCredential.user;
 
-      // Update Profile with Name
+      // 2. Update Profile
       await updateProfile(user, {
         displayName: name,
       });
-      // Save to MongoDB
-      await saveUserToBackend(user);
 
-      toast.success("Welcome to Crafty!", { id: loadingId });
-      router.push("/");
+      // 3. SEND VERIFICATION EMAIL
+      await sendEmailVerification(user);
+
+      // 4. Sign Out Immediately without verification
+      await signOut(auth);
+
+      toast.success(
+        "Verification email sent! Please check your inbox and spam as well.",
+        { id: loadingId, duration: 6000 }
+      );
+      router.push("/login");
     } catch (err) {
       console.error(err);
       if (err.code === "auth/email-already-in-use") {

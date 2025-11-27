@@ -6,6 +6,7 @@ import {
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
+  signOut,
 } from "firebase/auth";
 import { ArrowRight, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { Cormorant } from "next/font/google";
@@ -53,6 +54,16 @@ export default function Login() {
       );
       const user = userCredential.user;
 
+      // 1. CHECK EMAIL VERIFICATION
+      if (!user.emailVerified) {
+        toast.error("Please verify your email address first!", {
+          id: loadingId,
+        });
+        await signOut(auth);
+        return;
+      }
+
+      // 2. Only save to DB if verified
       await saveUserToBackend(user);
 
       toast.success("Welcome back!", { id: loadingId });
@@ -63,7 +74,7 @@ export default function Login() {
     }
   };
 
-  // Handle Google Login
+  // Handle Google Login (Auto Verified)
   const handleGoogleLogin = async () => {
     const loadingId = toast.loading("Connecting with Google...");
     try {
