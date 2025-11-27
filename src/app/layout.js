@@ -6,8 +6,15 @@ import { Toaster } from "react-hot-toast";
 import ComingSoon from "@/components/ComingSoon";
 
 export const metadata = {
-  title: "Crafty",
-  description: "Handmade products",
+  title: {
+    default: "Crafty - Handmade & Sustainable Marketplace",
+    template: "%s | Crafty",
+  },
+  description:
+    "Discover unique, handcrafted goods from artisans worldwide. Shop sustainable ceramics, bamboo, leather, and more.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({ children }) {

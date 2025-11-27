@@ -123,7 +123,10 @@ export default function Navbar() {
                         {user.photoURL ? (
                           <Image
                             src={user.photoURL}
-                            alt={user.displayName}
+                            alt={user.displayName || "User Avatar"}
+                            width={36}
+                            height={36}
+                            unoptimized={true}
                             className="w-full h-full rounded-full object-cover"
                           />
                         ) : (
@@ -297,11 +300,14 @@ export default function Navbar() {
                           {user.photoURL ? (
                             <Image
                               src={user.photoURL}
-                              alt={user.displayName}
+                              alt={user.displayName || "User Avatar"}
+                              width={36}
+                              height={36}
+                              unoptimized={true}
                               className="w-full h-full rounded-full object-cover"
                             />
                           ) : (
-                            <User className="w-5 h-5 text-[#507662]" />
+                            <User className="w-6 h-6 text-[#507662]" />
                           )}
                         </div>
                         <span className="text-xl font-semibold text-[#507662] truncate max-w-32">

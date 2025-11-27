@@ -127,7 +127,7 @@ export default function FeaturedCollection() {
                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-4">
                   {/* Eye Button: Go to Details */}
                   <Link
-                    href={`/products/${product.category}/${product._id}`}
+                    href={`/products/${product.category}/${product.slug}`}
                     className="p-3 bg-white text-[#3f3f3f] rounded-full hover:bg-amber-700 hover:text-white transition-colors shadow-lg transform translate-y-4 group-hover:translate-y-0 duration-300"
                     title="View Details"
                   >

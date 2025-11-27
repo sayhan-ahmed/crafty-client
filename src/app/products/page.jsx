@@ -179,7 +179,7 @@ function ProductsContent() {
 
                     {/* Details Button */}
                     <Link
-                      href={`/products/${product.category}/${product._id}`}
+                      href={`/products/${product.category}/${product.slug}`}
                       className="inline-flex items-center text-base font-bold text-amber-700 hover:text-amber-800 transition-all group-hover:translate-x-1 duration-300"
                     >
                       View Details <ArrowRight className="w-4 h-4 ml-1" />

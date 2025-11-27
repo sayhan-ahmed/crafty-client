@@ -224,8 +224,8 @@ export default function ProductDetails() {
         {/* --- BOTTOM SECTION: Detailed Info --- */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Long Description */}
-          <div className="lg:col-span-2 bg-white rounded-2xl p-8 md:p-12 shadow-sm border border-gray-100">
-            <h2 className="text-3xl font-bold text-[#3f3f3f] mb-6 border-b border-gray-100 pb-4">
+          <div className="lg:col-span-2 bg-white rounded-2xl p-8 md:p-10 shadow-sm border border-gray-100">
+            <h2 className="text-3xl font-bold text-[#3f3f3f] mb-4 border-b border-gray-100 pb-4">
               The Product Story
             </h2>
             <div className="text-gray-600 text-lg leading-loose space-y-6">
