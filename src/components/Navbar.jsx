@@ -15,15 +15,22 @@ import {
   Plus,
   Package,
   ShoppingBag,
+  AlertTriangle,
 } from "lucide-react";
 import Image from "next/image";
 import { Cormorant } from "next/font/google";
+import toast from "react-hot-toast";
+
 const cormorant = Cormorant({ subsets: ["latin"] });
 
 export default function Navbar() {
   const [user, setUser] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // 1. NEW STATE: For the Custom Logout Modal
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
   const router = useRouter();
   const pathname = usePathname();
   const isActive = (path) => pathname === path;
@@ -54,10 +61,26 @@ export default function Navbar() {
     };
   }, [dropdownOpen]);
 
-  const handleLogout = async () => {
-    await signOut(auth);
+  const handleLogoutClick = () => {
     setDropdownOpen(false);
-    router.push("/");
+    setMobileMenuOpen(false);
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = async () => {
+    setShowLogoutModal(false);
+    const loadingId = toast.loading("Logging out...");
+
+    setTimeout(async () => {
+      try {
+        await signOut(auth);
+        toast.success("Successfully logged out", { id: loadingId });
+        router.push("/");
+      } catch (error) {
+        console.error("Logout Error:", error);
+        toast.error("Failed to log out", { id: loadingId });
+      }
+    }, 1500);
   };
 
   const navLinks = [
@@ -99,7 +122,6 @@ export default function Navbar() {
                   }`}
                 >
                   {link.name}
-                  {/* underline */}
                   <span
                     className={`absolute left-0 -bottom-0.5 h-0.5 bg-amber-700 transition-all duration-300 ${
                       isActive(link.href) ? "w-full" : "w-0 group-hover:w-full"
@@ -172,8 +194,9 @@ export default function Navbar() {
                           <span>Manage Products</span>
                         </Link>
 
+                        {/* UPDATED LOGOUT BUTTON */}
                         <button
-                          onClick={handleLogout}
+                          onClick={handleLogoutClick}
                           className="flex items-center space-x-2 w-full px-4 py-2 text-base font-semibold text-red-600 hover:bg-red-50 cursor-pointer"
                         >
                           <LogOut className="w-4 h-4" />
@@ -300,14 +323,14 @@ export default function Navbar() {
                           {user.photoURL ? (
                             <Image
                               src={user.photoURL}
-                              alt={user.displayName || "User Avatar"}
+                              alt={user.displayName}
                               width={36}
                               height={36}
                               unoptimized={true}
                               className="w-full h-full rounded-full object-cover"
                             />
                           ) : (
-                            <User className="w-6 h-6 text-[#507662]" />
+                            <User className="w-5 h-5 text-[#507662]" />
                           )}
                         </div>
                         <span className="text-xl font-semibold text-[#507662] truncate max-w-32">
@@ -317,7 +340,7 @@ export default function Navbar() {
 
                       {/* Logout Button */}
                       <button
-                        onClick={handleLogout}
+                        onClick={handleLogoutClick}
                         className="flex items-center space-x-1 text-base font-medium bg-[#507662]/80 text-white px-3 py-1.5 rounded-md cursor-pointer"
                       >
                         <LogOut className="w-4 h-4" />
@@ -331,6 +354,42 @@ export default function Navbar() {
           )}
         </div>
       </nav>
+
+      {/* 3. CUSTOM LOGOUT MODAL UI */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 transform transition-all scale-100 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                <AlertTriangle className="w-6 h-6 text-red-600" />
+              </div>
+              <h3
+                className={`${cormorant.className} text-2xl font-bold text-gray-900 mb-2`}
+              >
+                Sign Out?
+              </h3>
+              <p className="text-gray-500 mb-6">
+                Are you sure you want to log out of your account?
+              </p>
+
+              <div className="flex gap-3 w-full">
+                <button
+                  onClick={() => setShowLogoutModal(false)}
+                  className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmLogout}
+                  className="flex-1 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors shadow-sm"
+                >
+                  Yes, Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

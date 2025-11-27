@@ -11,6 +11,16 @@ import { auth } from "@/lib/firebase";
 
 const cormorant = Cormorant({ subsets: ["latin"] });
 
+// Helper to create slug
+const createSlug = (name) => {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+};
+
 export default function AddProduct() {
   const router = useRouter();
   const [user, setUser] = useState(null);
@@ -56,9 +66,26 @@ export default function AddProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    const toastId = toast.loading("Creating product...");
+    const toastId = toast.loading("Validating...");
 
     try {
+      // 1. CHECK FOR DUPLICATE NAME/SLUG
+      const newSlug = createSlug(formData.name);
+      const checkRes = await fetch(
+        `https://crafty-server.vercel.app/products/${newSlug}`
+      );
+
+      if (checkRes.ok) {
+        toast.error("A product with this name already exists!", {
+          id: toastId,
+        });
+        setSubmitting(false);
+        return;
+      }
+
+      // 2. Proceed if not duplicate
+      toast.loading("Creating product...", { id: toastId });
+
       const productPayload = {
         ...formData,
         price: parseFloat(formData.price),
@@ -80,8 +107,7 @@ export default function AddProduct() {
 
       if (res.ok) {
         toast.success("Product created successfully!", { id: toastId });
-        // Redirect to the new Product Details Page
-        router.push(`/products/${formData.category}/${data.insertedId}`);
+        router.push(`/products/${formData.category}/${data.slug || newSlug}`);
       } else {
         toast.error(data.message || "Failed to create product", {
           id: toastId,

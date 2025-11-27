@@ -4,7 +4,13 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Trash2, ExternalLink, Calendar, Package } from "lucide-react";
+import {
+  Trash2,
+  ExternalLink,
+  Calendar,
+  Package,
+  AlertTriangle,
+} from "lucide-react";
 import { Cormorant } from "next/font/google";
 import { toast } from "react-hot-toast";
 import { onAuthStateChanged } from "firebase/auth";
@@ -17,6 +23,8 @@ export default function Orders() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const router = useRouter();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   // Check Auth & Fetch Data
   useEffect(() => {
@@ -47,22 +55,27 @@ export default function Orders() {
     }
   };
 
-  // 3. Handle Delete Order
-  const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to remove this item?")) return;
+  // Confirmation modal
+  const confirmDelete = (id) => {
+    setItemToDelete(id);
+    setShowDeleteModal(true);
+  };
 
+  // Performs the deletion
+  const handleDelete = async () => {
+    if (!itemToDelete) return;
+
+    setShowDeleteModal(false);
     const toastId = toast.loading("Removing item...");
     try {
       const res = await fetch(
-        `https://crafty-server.vercel.app/orders/${id}?email=${user.email}`,
-        {
-          method: "DELETE",
-        }
+        `https://crafty-server.vercel.app/orders/${itemToDelete}?email=${user.email}`,
+        { method: "DELETE" }
       );
 
       if (res.ok) {
         toast.success("Item removed", { id: toastId });
-        setOrders(orders.filter((order) => order._id !== id));
+        setOrders(orders.filter((order) => order._id !== itemToDelete));
       } else {
         const errorData = await res.json();
         toast.error(errorData.message || "Failed to delete", { id: toastId });
@@ -70,6 +83,8 @@ export default function Orders() {
     } catch (error) {
       console.error("Delete error:", error);
       toast.error("Error removing item", { id: toastId });
+    } finally {
+      setItemToDelete(null);
     }
   };
 
@@ -192,7 +207,7 @@ export default function Orders() {
                     </Link>
 
                     <button
-                      onClick={() => handleDelete(order._id)}
+                      onClick={() => confirmDelete(order._id)}
                       className="flex items-center text-base font-semibold text-red-500 hover:text-red-700 transition-colors ml-auto"
                     >
                       <Trash2 className="w-4 h-4 mr-1" />
@@ -205,6 +220,45 @@ export default function Orders() {
           </div>
         )}
       </div>
+      {/* DELETE MODAL */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 transform transition-all scale-100 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                <AlertTriangle className="w-6 h-6 text-red-600" />
+              </div>
+              <h3
+                className={`${cormorant.className} text-2xl font-bold text-gray-900 mb-2`}
+              >
+                Remove Item?
+              </h3>
+              <p className="text-gray-500 mb-6">
+                Are you sure you want to remove this item from your orders? This
+                action cannot be undone.
+              </p>
+
+              <div className="flex gap-3 w-full">
+                <button
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    setItemToDelete(null);
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="flex-1 px-4 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors shadow-sm"
+                >
+                  Yes, Remove
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
