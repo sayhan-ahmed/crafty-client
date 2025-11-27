@@ -2,6 +2,7 @@ import Category from "@/components/Category";
 import FeaturedCollection from "@/components/FeaturedCollection";
 import Features from "@/components/Features";
 import Hero from "@/components/Hero";
+import Testimonials from "@/components/Testimonials";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <Features />
       <Category />
       <FeaturedCollection />
+      <Testimonials />
     </div>
   );
 }
