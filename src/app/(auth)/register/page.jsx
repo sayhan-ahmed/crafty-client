@@ -123,7 +123,6 @@ export default function Register() {
       // 3. SEND VERIFICATION EMAIL
       await sendEmailVerification(user);
 
-      await saveUserToBackend(user, photoURL);
       await signOut(auth);
 
       toast.success(

@@ -13,7 +13,7 @@ export const metadata = {
   description:
     "Discover unique, handcrafted goods from artisans worldwide. Shop sustainable ceramics, bamboo, leather, and more.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/favicon.png",
   },
 };
 
