@@ -17,9 +17,12 @@ import {
   Mail,
   User,
   CheckCircle,
+  Upload,
+  Loader2,
 } from "lucide-react";
 import { Cormorant } from "next/font/google";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -35,18 +38,47 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // Image State
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
+
   const router = useRouter();
 
-  // Sync user to MongoDB (For Google Login only)
-  const saveUserToBackend = async (user) => {
+  // 1. Handle File Selection
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  // 2. Upload to ImgBB
+  const uploadToImgBB = async (file) => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    // Get key
+    const key = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+    const res = await fetch(`https://api.imgbb.com/1/upload?key=${key}`, {
+      method: "POST",
+      body: formData,
+    });
+    const data = await res.json();
+    return data.data.url;
+  };
+
+  // Sync user to MongoDB
+  const saveUserToBackend = async (user, photoURL) => {
     try {
       await fetch("https://crafty-server.vercel.app/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: user.email,
-          user: user.displayName || name || user.email.split("@")[0],
-          image: user.photoURL || "",
+          user: user.displayName || name,
+          image: photoURL || user.photoURL || "",
         }),
       });
     } catch (error) {
@@ -54,30 +86,13 @@ export default function Register() {
     }
   };
 
-  // Handle Google Register (Google emails are Auto-Verified)
-  const handleGoogleRegister = async () => {
-    const loadingId = toast.loading("Connecting with Google...");
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      // Save directly because Google verifies emails
-      await saveUserToBackend(user);
-
-      toast.success("Account created with Google!", { id: loadingId });
-      router.push("/");
-    } catch (err) {
-      console.error(err);
-      toast.error(err.message, { id: loadingId });
-    }
-  };
-
-  // Handle Email/Password Register
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    // Password Validation
+    // Name and Password Validation
+    if (name.length < 5) {
+      return toast.error("Please enter your full name");
+    }
     if (password.length < 6) {
       return toast.error("Password must be at least 6 characters");
     }
@@ -86,9 +101,16 @@ export default function Register() {
     }
 
     const loadingId = toast.loading("Creating account...");
+    setUploading(true);
 
     try {
-      // 1. Create User in Firebase
+      let photoURL = "";
+      if (imageFile) {
+        toast.loading("Creating your account...", {
+          id: loadingId,
+        });
+        photoURL = await uploadToImgBB(imageFile);
+      }
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -96,15 +118,12 @@ export default function Register() {
       );
       const user = userCredential.user;
 
-      // 2. Update Profile
-      await updateProfile(user, {
-        displayName: name,
-      });
+      await updateProfile(user, { displayName: name, photoURL: photoURL });
 
       // 3. SEND VERIFICATION EMAIL
       await sendEmailVerification(user);
 
-      // 4. Sign Out Immediately without verification
+      await saveUserToBackend(user, photoURL);
       await signOut(auth);
 
       toast.success(
@@ -114,11 +133,23 @@ export default function Register() {
       router.push("/login");
     } catch (err) {
       console.error(err);
-      if (err.code === "auth/email-already-in-use") {
-        toast.error("Email is already registered", { id: loadingId });
-      } else {
-        toast.error(err.message, { id: loadingId });
-      }
+      toast.error(err.message, { id: loadingId });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Google Login Logic
+  const handleGoogleRegister = async () => {
+    const loadingId = toast.loading("Connecting...");
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      await saveUserToBackend(result.user);
+      toast.success("Account created!", { id: loadingId });
+      router.push("/");
+    } catch (err) {
+      toast.error("Google Sign-in failed", { id: loadingId });
     }
   };
 
@@ -136,7 +167,7 @@ export default function Register() {
             crafty.
           </Link>
           <p className="text-white/80 mt-2 text-lg font-medium">
-            Join our community of artisans.
+            Join our community.
           </p>
         </div>
 
@@ -144,7 +175,7 @@ export default function Register() {
           {/* Google Button */}
           <button
             onClick={handleGoogleRegister}
-            className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 text-lg font-semibold py-3 px-4 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm mb-6"
+            className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 text-lg font-semibold py-3 px-4 rounded-lg hover:bg-gray-50 mb-6"
           >
             <FcGoogle className="w-6 h-6" />
             <span>Sign up with Google</span>
@@ -164,9 +195,37 @@ export default function Register() {
 
           {/* Register Form */}
           <form onSubmit={handleRegister} className="space-y-4">
+            {/* Image Upload Input */}
+            <div className="flex justify-center mb-4">
+              <div className="relative group cursor-pointer w-24 h-24">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                />
+                <div className="w-full h-full rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center bg-gray-50 overflow-hidden group-hover:border-[#507662] transition-colors">
+                  {imagePreview ? (
+                    <Image
+                      src={imagePreview}
+                      alt="Preview"
+                      width={96}
+                      height={96}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="text-center text-gray-400">
+                      <Upload className="w-6 h-6 mx-auto" />
+                      <span className="text-xs">Photo</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
             {/* Name Field */}
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
                 <User className="h-5 w-5 text-gray-400" />
               </div>
               <input
@@ -175,13 +234,13 @@ export default function Register() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#507662] focus:border-transparent outline-none transition-all"
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#507662] outline-none"
               />
             </div>
 
             {/* Email Field */}
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
                 <Mail className="h-5 w-5 text-gray-400" />
               </div>
               <input
@@ -190,13 +249,13 @@ export default function Register() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#507662] focus:border-transparent outline-none transition-all"
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#507662] outline-none"
               />
             </div>
 
             {/* Password Field */}
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
                 <Lock className="h-5 w-5 text-gray-400" />
               </div>
               <input
@@ -206,12 +265,13 @@ export default function Register() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#507662] focus:border-transparent outline-none transition-all"
+                className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#507662] outline-none"
               />
+              {/* Eye toggle button */}
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#507662] cursor-pointer transition-all ease-in-out duration-300"
               >
                 {showPassword ? (
                   <EyeOff className="h-5 w-5" />
@@ -223,7 +283,7 @@ export default function Register() {
 
             {/* Confirm Password Field */}
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
                 <CheckCircle className="h-5 w-5 text-gray-400" />
               </div>
               <input
@@ -232,12 +292,13 @@ export default function Register() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#507662] focus:border-transparent outline-none transition-all"
+                className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#507662] outline-none"
               />
+              {/* Eye toggle button */}
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#507662] cursor-pointer transition-all ease-in-out duration-300"
               >
                 {showConfirmPassword ? (
                   <EyeOff className="h-5 w-5" />
@@ -250,10 +311,17 @@ export default function Register() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-[#507662] text-white py-3 rounded-lg font-bold text-xl hover:bg-[#3d5a4b] transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 mt-2"
+              disabled={uploading}
+              className="w-full bg-[#507662] text-white py-3 rounded-lg font-bold text-xl hover:bg-[#3d5a4b] hover:scale-105 transition-all ease-in-out duration-300 flex items-center justify-center gap-2 disabled:opacity-70"
             >
-              <span>Create Account</span>
-              <ArrowRight className="w-5 h-5" />
+              {uploading ? (
+                <Loader2 className="animate-spin w-5 h-5" />
+              ) : (
+                <>
+                  <span>Create Account</span>
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
             </button>
           </form>
 

@@ -21,7 +21,7 @@ export default function About() {
             unoptimized={true}
           />
           <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-            <h1 className="text-6xl text-white font-bold tracking-tight shadow-sm">
+            <h1 className="text-7xl text-white font-bold tracking-tight">
               Our Story
             </h1>
           </div>
