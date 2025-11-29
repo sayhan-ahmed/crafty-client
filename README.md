@@ -1,6 +1,6 @@
-# Crafty. 🏺
+# Crafty. — Premium Handcrafted E-Commerce Platform 🏺
 
-**Crafty** is a full-stack e-commerce web application designed for artisans to list handcrafted goods and for customers to discover unique, sustainable products. It features a polished UI, secure authentication via Firebase, and a complete shopping workflow backed by MongoDB.
+**Crafty** is a high-performance, secure, and scalable e-commerce web application engineered to deliver a seamless shopping experience for premium handcrafted goods. Built with modern full-stack architecture, real-time data synchronization, and enterprise-grade authentication.
 
 ## 🚀 Live Demo
 
@@ -8,26 +8,31 @@
 
 ---
 
-## ✨ Features
+## Core Features
 
-### 🛍️ Customer Experience
+- **Secure User Authentication**  
+  Firebase Authentication with Email/Password and Google OAuth; persistent sessions across page reloads.
 
-- **Hero Slider:** Dynamic, visually appealing slider showcasing featured artisan stories.
-- **Shop by Category:** Filter products by specific crafts (Bamboo, Ceramics, Leather, etc.).
-- **Product Details:** Comprehensive product pages with image zoom, long descriptions, specifications, and shipping info.
-- **Search & Filter:** Real-time filtering by category and search terms.
-- **Shopping Cart (Orders):** Add items to orders and view purchase history.
+- **Protected Route Access Control**  
+  Next.js middleware with Firebase Admin SDK verification; restricted access to `/dashboard/add` and `/dashboard/orders`.
 
-### 🔐 Authentication & Security
+- **Dynamic Product Catalog**  
+  Server-side rendered listings with real-time category filtering and full-text search.
 
-- **Firebase Auth:** Secure Login and Registration using Email/Password and Google Sign-In.
-- **Protected Routes:** Dashboard pages (`/dashboard/add`, `/dashboard/orders`) are inaccessible without login.
-- **Persisted Sessions:** Users remain logged in across page reloads.
+- **Rich Product Detail Pages**  
+  High-resolution image zoom, structured specifications, shipping details, and responsive layout.
 
-### 📦 Vendor Dashboard
+- **Order Management System**  
+  Full CRUD functionality for user orders via RESTful Express.js API backed by MongoDB.
 
-- **Add Product:** Secure form to list new items with image URLs, pricing, and detailed descriptions.
-- **Manage Orders:** View a list of ordered items and remove them if necessary.
+- **Responsive & Accessible UI**  
+  Built with Next.js 14 (App Router), Tailwind CSS, and mobile-first design; WCAG-compliant components.
+
+- **Performance-Optimized Frontend**  
+  Swiper.js hero slider, lazy-loaded images, and optimized asset delivery for fast load times.
+
+- **Full-Stack Data Architecture**  
+  Node.js/Express backend with MongoDB (Native Driver) for scalable product and order persistence.
 
 ---
 
