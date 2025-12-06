@@ -35,7 +35,7 @@ export default function About() {
           </p>
 
           <h2 className="text-4xl text-[#3f3f3f] font-bold mb-6">
-            Crafting with Conscience
+            Crafting with Conscience.
           </h2>
 
           <div className="text-lg prose prose-stone mx-auto text-gray-600 leading-relaxed space-y-4 max-w-2xl">
